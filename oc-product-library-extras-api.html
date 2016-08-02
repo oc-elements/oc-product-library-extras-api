@@ -1,34 +1,189 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../oc-core-utils/oc-api-provider-behaviour.html">
+
 
 <!--
 `oc-product-library-extras-api`
-Element to consume Ordercloud global product extras API
+Element to consume Ordercloud Local Product Extras API
 
-@demo demo/index.html 
+@demo demo/index.html
 -->
 
 <dom-module id="oc-product-library-extras-api">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]</h2>
+    <iron-ajax id="getExtraSets"></iron-ajax>
+    <iron-ajax id="createExtraSet"></iron-ajax>
+    <iron-ajax id="deleteExtraSet"></iron-ajax>
+    <iron-ajax id="updateExtraSet"></iron-ajax>
+    <iron-ajax id="getExtraSet"></iron-ajax>
+    <iron-ajax id="enableExtraSet"></iron-ajax>
+    <iron-ajax id="disableExtraSet"></iron-ajax>
+
+    <iron-ajax id="createExtra"></iron-ajax>
+    <iron-ajax id="updateExtra"></iron-ajax>
+    <iron-ajax id="getExtras"></iron-ajax>
+    <iron-ajax id="getExtra"></iron-ajax>
+    <iron-ajax id="deleteExtra"></iron-ajax>
   </template>
 
   <script>
     Polymer({
-
       is: 'oc-product-library-extras-api',
+      behaviors: [OC.Behaviours.ApiProvider],
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 'oc-product-library-extras-api',
-        },
+      /**
+       * Return all Extra Sets of an organisation
+       *
+       * @return {Promise}
+       */
+      getExtraSets: function(page, pageSize) {
+        this.$.getExtraSets.url = this._url('product/library/extras/set?page=' + page + '&pagesize=' + pageSize);
+        return this._generateRequest(this.$.getExtraSets);
       },
 
+      /**
+       * Create a new extra set for an Organisation
+       *
+       * @param {{ name:String, displayName:String, description:String }} extraSet
+       * @return {Promise}
+       */
+      createExtraSet: function(extraSet) {
+        this.$.createExtraSet.url = this._url('product/library/extras/set');
+        this.$.createExtraSet.method = "POST";
+        this.$.createExtraSet.contentType = "application/json";
+        this.$.createExtraSet.body = extraSet;
+        return this._generateRequest(this.$.createExtraSet);
+      },
+
+      /**
+       * Delete an extra set of an Organisation
+       *
+       * @param extraSetId Number
+       * @return {Promise}
+       */
+      deleteExtraSet: function(extraSetId) {
+        this.$.deleteExtraSet.url = this._url('product/library/extras/set/' + extraSetId);
+        this.$.deleteExtraSet.method = "DELETE";
+        this.$.deleteExtraSet.contentType = "application/json";
+        return this._generateRequest(this.$.deleteExtraSet);
+      },
+
+      /**
+       * Update an extra set of an Organisation
+       *
+       * @param extraSetId Number
+       * @param {{ name:String, displayName:String, description:String }} extraSet
+       * @return {Promise}
+       */
+      updateExtraSet: function(extraSetId, extraSet) {
+        this.$.updateExtraSet.url = this._url('product/library/extras/set/' + extraSetId);
+        this.$.updateExtraSet.method = "PUT";
+        this.$.updateExtraSet.contentType = "application/json";
+        this.$.updateExtraSet.body = extraSet;
+        return this._generateRequest(this.$.updateExtraSet);
+      },
+
+      /**
+       * Get an Extra Set of an organisation
+       *
+       * @param extraSetId Number
+       * @return {Promise}
+       */
+      getExtraSet: function(extraSetId) {
+        this.$.getExtraSet.url = this._url('product/library/extras/set/' + extraSetId);
+        return this._generateRequest(this.$.getExtraSet);
+      },
+
+      /**
+       * Create a new extra for an Organisation
+       *
+       * @param organisationId Number
+       * @param {{ name:String, description:String, price:Number, setId:Number }} extra
+       * @return {Promise}
+       */
+      createExtra: function(extra) {
+        this.$.createExtra.url = this._url('product/library/extras');
+        this.$.createExtra.method = "POST";
+        this.$.createExtra.contentType = "application/json";
+        this.$.createExtra.body = extra;
+        return this._generateRequest(this.$.createExtra);
+      },
+
+      /**
+       * Return all Extras of an organisation
+       *
+       * @param organisationId Number
+       * @return {Promise}
+       */
+      getExtras: function() {
+        this.$.getExtras.url = this._url('/product/library/extras');
+        return this._generateRequest(this.$.getExtras);
+      },
+
+      /**
+       * Get a specific extra
+       *
+       * @param extraId Number
+       * @return {Promise}
+       */
+      getExtra: function(extraId) {
+        this.$.getExtra.url = this._url('product/library/extras/' + extraId);
+        return this._generateRequest(this.$.getExtra);
+      },
+
+      /**
+       * Update an extra
+       * @param extraId Number
+       * @param {{ name: String, description: String, price: Number, setId: Number }} extra
+       * @return {Promise}
+       */
+      updateExtra: function(extraId, extra) {
+        this.$.updateExtra.url = this._url('product/library/extras/' + extraId);
+        this.$.updateExtra.method = "PUT";
+        this.$.updateExtra.contentType = "application/json";
+        this.$.updateExtra.body = extra;
+        return this._generateRequest(this.$.updateExtra);
+      },
+
+      /**
+       * Delete a specific extra
+       *
+       * @param extraId Number
+       * @return {Promise}
+       */
+      deleteExtra: function(extraId) {
+        this.$.deleteExtra.url = this._url('product/library/extras/' + extraId);
+        this.$.deleteExtra.method = "DELETE";
+        this.$.deleteExtra.contentType = "application/json";
+        return this._generateRequest(this.$.deleteExtra);
+      },
+
+      /**
+       * Enable an extra set
+       *
+       * @param extraSetId Number
+       * @return {Promise}
+       */
+      enableExtraSet: function(extraSetId) {
+        this.$.enableExtraSet.url = this._url('product/library/extras/set/' + extraSetId + '/enable');
+        this.$.enableExtraSet.method = "PUT";
+        this.$.enableExtraSet.contentType = "application/json";
+        return this._generateRequest(this.$.enableExtraSet);
+      },
+
+      /**
+       * Disable an extra set
+       *
+       * @param extraSetId Number
+       * @return {Promise}
+       */
+      disableExtraSet: function(extraSetId) {
+        this.$.disableExtraSet.url = this._url('product/library/extras/set/' + extraSetId + '/disable');
+        this.$.disableExtraSet.method = "PUT";
+        this.$.disableExtraSet.contentType = "application/json";
+        return this._generateRequest(this.$.disableExtraSet);
+      }
     });
   </script>
 </dom-module>
