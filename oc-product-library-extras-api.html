@@ -24,7 +24,8 @@ Element to consume Ordercloud Local Product Extras API
     <iron-ajax id="updateExtra"></iron-ajax>
     <iron-ajax id="getExtras"></iron-ajax>
     <iron-ajax id="getExtra"></iron-ajax>
-    <iron-ajax id="deleteExtra"></iron-ajax>
+    <iron-ajax id="cloneExtraSet"></iron-ajax>
+    <!--<iron-ajax id="deleteExtra"></iron-ajax>-->
   </template>
 
   <script>
@@ -62,12 +63,14 @@ Element to consume Ordercloud Local Product Extras API
        * @param extraSetId Number
        * @return {Promise}
        */
-      deleteExtraSet: function(extraSetId) {
-        this.$.deleteExtraSet.url = this._url('product/library/extras/set/' + extraSetId);
-        this.$.deleteExtraSet.method = "DELETE";
-        this.$.deleteExtraSet.contentType = "application/json";
-        return this._generateRequest(this.$.deleteExtraSet);
-      },
+
+//      todo: create delete endpoint
+//      deleteExtraSet: function(extraSetId) {
+//        this.$.deleteExtraSet.url = this._url('product/library/extras/set/' + extraSetId);
+//        this.$.deleteExtraSet.method = "DELETE";
+//        this.$.deleteExtraSet.contentType = "application/json";
+//        return this._generateRequest(this.$.deleteExtraSet);
+//      },
 
       /**
        * Update an extra set of an Organisation
@@ -178,11 +181,27 @@ Element to consume Ordercloud Local Product Extras API
        * @return {Promise}
        */
       disableExtraSet: function(extraSetId) {
-        this.$.disableExtraSet.url = this._url('product/library/extras/set/' + extraSetId + '/disable');
-        this.$.disableExtraSet.method = "PUT";
+        this.$.disableExtraSet.url = this._url('product/library/extras/set/' + extraSetId);
+        this.$.disableExtraSet.method = "DELETE";
         this.$.disableExtraSet.contentType = "application/json";
         return this._generateRequest(this.$.disableExtraSet);
+      },
+
+      /**
+       * Clone Extra set
+       *
+       * @param extraSetId Number
+       * @param newExtraSetName String
+       * @return {Promise}
+       */
+
+      cloneExtraSet: function(extraSetId, newExtraSetName) {
+        this.$.cloneExtraSet.url = this._url('/product/library/extras/set/'+extraSetId+'/copy/'+newExtraSetName);
+        this.$.cloneExtraSet.method = "PUT";
+        this.$.cloneExtraSet.contentType = "application/json";
+        return this._generateRequest(this.$.cloneExtraSet);
       }
+
     });
   </script>
 </dom-module>
